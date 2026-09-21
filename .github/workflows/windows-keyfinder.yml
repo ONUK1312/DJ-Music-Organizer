@@ -84,6 +84,17 @@ jobs:
           } | Select-Object FullName
 
       
+      - name: Show KeyFinder DLL dependencies
+        shell: pwsh
+        run: |
+          $exe = (Get-ChildItem -Recurse keyfinder-cli-build -Filter keyfinder-cli.exe | Select-Object -First 1).FullName
+          Write-Host "KeyFinder: $exe"
+          objdump -p $exe | Select-String "DLL Name"
+          Write-Host "--- vcpkg DLLs ---"
+          Get-ChildItem C:\\vcpkg\\installed\\x64-windows\\bin -Filter *.dll | Select-Object FullName
+          Write-Host "--- MinGW DLLs ---"
+          Get-ChildItem C:\\mingw64\\bin -Filter *.dll -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "gcc|stdc\+\+|winpthread" } | Select-Object FullName
+
       - name: Upload keyfinder-cli
         uses: actions/upload-artifact@v4
         with:
