@@ -382,6 +382,8 @@ def detect_key(path):
     import tempfile
     import os
     import re
+    import sys
+    import sys
 
     def normalize_key(value):
         value = value.strip()
@@ -424,8 +426,14 @@ def detect_key(path):
 
     def run_keyfinder(target):
         try:
+            if sys.platform == "win32":
+                base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+                keyfinder = os.path.join(base, "bundled", "keyfinder-cli.exe")
+            else:
+                keyfinder = "keyfinder-cli"
+
             result = subprocess.run(
-                ["keyfinder-cli", str(target)],
+                [keyfinder, str(target)],
                 capture_output=True,
                 text=True,
                 timeout=180
