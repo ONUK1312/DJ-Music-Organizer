@@ -1,0 +1,67 @@
+name: Windows KeyFinder Test
+
+on:
+  push:
+    branches:
+      - windows-build
+  workflow_dispatch:
+
+jobs:
+  test-keyfinder:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        shell: pwsh
+        run: |
+          choco install cmake ninja ffmpeg -y
+
+      - name: Clone libkeyfinder
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/mixxxdj/libkeyfinder.git libkeyfinder-src
+
+      - name: Build libkeyfinder
+        shell: pwsh
+        run: |
+          cmake -S libkeyfinder-src -B libkeyfinder-build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build libkeyfinder-build --parallel
+
+      - name: Show libkeyfinder build
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse libkeyfinder-build | Where-Object {
+            $_.Name -match 'keyfinder.*\.(dll|lib|a)$'
+          } | Select-Object FullName
+
+      - name: Clone keyfinder-cli
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/EvanPurkhiser/keyfinder-cli.git keyfinder-cli-src
+
+      - name: Configure keyfinder-cli
+        shell: pwsh
+        run: |
+          cmake -S keyfinder-cli-src -B keyfinder-cli-build -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_PREFIX_PATH="$PWD/libkeyfinder-build"
+
+      - name: Build keyfinder-cli
+        shell: pwsh
+        run: |
+          cmake --build keyfinder-cli-build --parallel
+
+      - name: Test keyfinder-cli
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse keyfinder-cli-build | Where-Object {
+            $_.Name -eq 'keyfinder-cli.exe'
+          } | Select-Object FullName
