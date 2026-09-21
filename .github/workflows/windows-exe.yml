@@ -31,7 +31,7 @@ jobs:
         run: |
           gh run download 35556529202 -n keyfinder-cli-windows
           New-Item -ItemType Directory -Force -Path bundled
-          Move-Item keyfinder-cli.exe bundled/keyfinder-cli.exe
+          Move-Item (Get-ChildItem -Recurse -Filter keyfinder-cli.exe | Select-Object -First 1).FullName bundled/keyfinder-cli.exe
 
       - name: Build EXE
         shell: pwsh
