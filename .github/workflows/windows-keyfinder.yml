@@ -22,7 +22,7 @@ jobs:
       - name: Install build tools
         shell: pwsh
         run: |
-          choco install cmake ninja ffmpeg -y
+          choco install cmake ninja ffmpeg pkgconfiglite -y
 
       - name: Install vcpkg and FFTW3
         shell: pwsh
