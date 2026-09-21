@@ -26,10 +26,17 @@ jobs:
           pip install pyinstaller
           pip install aubio mutagen PySide6
 
+      - name: Download KeyFinder
+        shell: pwsh
+        run: |
+          gh run download 35556529202 -n keyfinder-cli-windows
+          New-Item -ItemType Directory -Force -Path bundled
+          Move-Item keyfinder-cli.exe bundled/keyfinder-cli.exe
+
       - name: Build EXE
         shell: pwsh
         run: |
-          pyinstaller --onefile --windowed --name DJ-Music-Organizer dj_organizer.py
+          pyinstaller --onefile --windowed --name DJ-Music-Organizer --add-binary "bundled/keyfinder-cli.exe;bundled" dj_organizer.py
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
