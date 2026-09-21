@@ -29,7 +29,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/microsoft/vcpkg.git C:\vcpkg
           C:\vcpkg\bootstrap-vcpkg.bat
-          C:\vcpkg\vcpkg.exe install fftw3:x64-windows
+          C:\vcpkg\vcpkg.exe install fftw3:x64-windows ffmpeg:x64-windows
 
       - name: Clone libkeyfinder
         shell: pwsh
@@ -57,6 +57,7 @@ jobs:
       - name: Configure keyfinder-cli
         shell: pwsh
         run: |
+          $env:PKG_CONFIG_PATH = "C:\vcpkg\installed\x64-windows\lib\pkgconfig"
           cmake -S keyfinder-cli-src -B keyfinder-cli-build -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_PREFIX_PATH="$PWD/libkeyfinder-build"
