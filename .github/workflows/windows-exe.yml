@@ -28,6 +28,8 @@ jobs:
 
       - name: Download KeyFinder
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh run download 35556529202 -n keyfinder-cli-windows
           New-Item -ItemType Directory -Force -Path bundled
