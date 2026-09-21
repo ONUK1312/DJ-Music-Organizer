@@ -39,7 +39,7 @@ jobs:
       - name: Build libkeyfinder
         shell: pwsh
         run: |
-          cmake -S libkeyfinder-src -B libkeyfinder-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+          cmake -S libkeyfinder-src -B libkeyfinder-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_TESTING=OFF
           cmake --build libkeyfinder-build --parallel
 
       - name: Show libkeyfinder build
