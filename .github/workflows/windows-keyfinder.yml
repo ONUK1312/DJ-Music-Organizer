@@ -61,7 +61,9 @@ jobs:
           $env:PKG_CONFIG_PATH = "C:\vcpkg\installed\x64-windows\lib\pkgconfig"
           cmake -S keyfinder-cli-src -B keyfinder-cli-build -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_PREFIX_PATH="C:/keyfinder-install"
+            -DCMAKE_PREFIX_PATH="C:/keyfinder-install;C:/vcpkg/installed/x64-windows" `
+            -DFFTW3_LIBRARY="C:/vcpkg/installed/x64-windows/lib/fftw3.lib" `
+            -DFFTW3_INCLUDE_DIR="C:/vcpkg/installed/x64-windows/include"
 
       - name: Build keyfinder-cli
         shell: pwsh
