@@ -1,6 +1,9 @@
 name: Windows Build Test
 
 on:
+  push:
+    branches:
+      - windows-build
   workflow_dispatch:
 
 jobs:
