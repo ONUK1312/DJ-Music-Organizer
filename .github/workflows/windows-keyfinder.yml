@@ -24,6 +24,13 @@ jobs:
         run: |
           choco install cmake ninja ffmpeg -y
 
+      - name: Install vcpkg and FFTW3
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git C:\vcpkg
+          C:\vcpkg\bootstrap-vcpkg.bat
+          C:\vcpkg\vcpkg.exe install fftw3:x64-windows
+
       - name: Clone libkeyfinder
         shell: pwsh
         run: |
