@@ -80,7 +80,22 @@ jobs:
         shell: pwsh
         run: |
           $exe = (Get-ChildItem -Recurse keyfinder-cli-build -Filter keyfinder-cli.exe | Select-Object -First 1).FullName
+          $exeDir = Split-Path $exe
+
           Write-Host "KeyFinder: $exe"
+          Write-Host "EXE directory: $exeDir"
+
+          Copy-Item C:\keyfinder-install\bin\libkeyfinder.dll $exeDir\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\avcodec-63.dll $exeDir\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\avformat-63.dll $exeDir\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\avutil-61.dll $exeDir\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\swresample-7.dll $exeDir\
+          Copy-Item C:\mingw64\bin\libgcc_s_seh-1.dll $exeDir\
+          Copy-Item C:\mingw64\bin\libstdc++-6.dll $exeDir\
+          Copy-Item C:\mingw64\bin\libwinpthread-1.dll $exeDir\
+
+          Write-Host "--- DLLs next to KeyFinder ---"
+          Get-ChildItem $exeDir -Filter *.dll | Select-Object Name
 
           ffmpeg -y -f lavfi -i "sine=frequency=261.63:duration=10" -ar 44100 -ac 2 test-tone.wav
 
