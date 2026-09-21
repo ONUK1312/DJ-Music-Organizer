@@ -31,14 +31,25 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download 35556529202 -n keyfinder-cli-windows
+          $run = gh run list --workflow windows-keyfinder.yml --branch windows-build --status success --limit 1 --json databaseId --jq ".[0].databaseId"
           New-Item -ItemType Directory -Force -Path bundled
-          Move-Item (Get-ChildItem -Recurse -Filter keyfinder-cli.exe | Select-Object -First 1).FullName bundled/keyfinder-cli.exe
+          gh run download $run -n keyfinder-cli-windows -D bundled
 
       - name: Build EXE
         shell: pwsh
         run: |
-          pyinstaller --onefile --windowed --name DJ-Music-Organizer --add-binary "bundled/keyfinder-cli.exe;bundled" dj_organizer.py
+          New-Item -ItemType Directory -Force -Path bundled
+          pyinstaller --onefile --windowed --name DJ-Music-Organizer `
+            --add-binary "bundled\keyfinder-cli.exe;bundled" `
+            --add-binary "bundled\libkeyfinder.dll;bundled" `
+            --add-binary "bundled\avcodec-63.dll;bundled" `
+            --add-binary "bundled\avformat-63.dll;bundled" `
+            --add-binary "bundled\avutil-61.dll;bundled" `
+            --add-binary "bundled\swresample-7.dll;bundled" `
+            --add-binary "bundled\libgcc_s_seh-1.dll;bundled" `
+            --add-binary "bundled\libstdc++-6.dll;bundled" `
+            --add-binary "bundled\libwinpthread-1.dll;bundled" `
+            dj_organizer.py
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4

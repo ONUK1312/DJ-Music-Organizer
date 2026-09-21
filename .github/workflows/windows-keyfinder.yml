@@ -95,8 +95,22 @@ jobs:
           Write-Host "--- MinGW DLLs ---"
           Get-ChildItem C:\\mingw64\\bin -Filter *.dll -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "gcc|stdc\+\+|winpthread" } | Select-Object FullName
 
+      - name: Package KeyFinder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path keyfinder-package
+          Copy-Item (Get-ChildItem -Recurse keyfinder-cli-build -Filter keyfinder-cli.exe | Select-Object -First 1).FullName keyfinder-package\
+          Copy-Item C:\keyfinder-install\bin\libkeyfinder.dll keyfinder-package\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\avcodec-63.dll keyfinder-package\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\avformat-63.dll keyfinder-package\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\avutil-61.dll keyfinder-package\
+          Copy-Item C:\vcpkg\installed\x64-windows\bin\swresample-7.dll keyfinder-package\
+          Copy-Item C:\mingw64\bin\libgcc_s_seh-1.dll keyfinder-package\
+          Copy-Item C:\mingw64\bin\libstdc++-6.dll keyfinder-package\
+          Copy-Item C:\mingw64\bin\libwinpthread-1.dll keyfinder-package\
+
       - name: Upload keyfinder-cli
         uses: actions/upload-artifact@v4
         with:
           name: keyfinder-cli-windows
-          path: keyfinder-cli-build/keyfinder-cli.exe
+          path: keyfinder-package
