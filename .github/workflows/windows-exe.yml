@@ -1,6 +1,9 @@
 name: Windows EXE
 
 on:
+  push:
+    branches:
+      - windows-build
   workflow_dispatch:
 
 jobs:
