@@ -24,6 +24,12 @@ jobs:
         run: |
           choco install cmake ninja ffmpeg pkgconfiglite -y
 
+      - name: Cache vcpkg
+        uses: actions/cache@v4
+        with:
+          path: C:\vcpkg\installed
+          key: windows-vcpkg-${{ runner.arch }}-ffmpeg-fftw3-v1
+
       - name: Install vcpkg and FFTW3
         shell: pwsh
         run: |
