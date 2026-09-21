@@ -41,6 +41,7 @@ jobs:
         run: |
           cmake -S libkeyfinder-src -B libkeyfinder-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_TESTING=OFF
           cmake --build libkeyfinder-build --parallel
+          cmake --install libkeyfinder-build --prefix C:/keyfinder-install
 
       - name: Show libkeyfinder build
         shell: pwsh
@@ -60,7 +61,7 @@ jobs:
           $env:PKG_CONFIG_PATH = "C:\vcpkg\installed\x64-windows\lib\pkgconfig"
           cmake -S keyfinder-cli-src -B keyfinder-cli-build -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_PREFIX_PATH="$PWD/libkeyfinder-build"
+            -DCMAKE_PREFIX_PATH="C:/keyfinder-install"
 
       - name: Build keyfinder-cli
         shell: pwsh
