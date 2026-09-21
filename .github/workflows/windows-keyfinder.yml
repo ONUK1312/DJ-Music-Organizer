@@ -79,9 +79,17 @@ jobs:
       - name: Test keyfinder-cli
         shell: pwsh
         run: |
-          Get-ChildItem -Recurse keyfinder-cli-build | Where-Object {
-            $_.Name -eq 'keyfinder-cli.exe'
-          } | Select-Object FullName
+          $exe = (Get-ChildItem -Recurse keyfinder-cli-build -Filter keyfinder-cli.exe | Select-Object -First 1).FullName
+          Write-Host "KeyFinder: $exe"
+
+          ffmpeg -y -f lavfi -i "sine=frequency=261.63:duration=10" -ar 44100 -ac 2 test-tone.wav
+
+          Write-Host "--- Running KeyFinder ---"
+          & $exe test-tone.wav
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "KeyFinder failed with exit code $LASTEXITCODE"
+          }
 
       
       - name: Show KeyFinder DLL dependencies
